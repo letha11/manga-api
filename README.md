@@ -57,3 +57,19 @@ manga/filter/[pageNumber]?genre=[genreValue]&type=[typeValue]&order=[orderValue]
 example : https://mangaoi.herokuapp.com/api/manga/filter/1?genre=9&type=manhwa&order=popular&status=ongoing
 
 that example above is going to search manga that have **genre of action** AND **comic type is manhwa** AND **order by popularity** AND **status is ongoing**
+
+## Manga Detail
+
+```
+manga/detail/[endpoint]
+```
+
+example : https://mangaoi.herokuapp.com/api/manga/detail/god-of-blackfield
+
+## Chapter
+
+```
+ch/[endpoint]
+```
+
+example : https://mangaoi.herokuapp.com/api/ch/god-of-blackfield-chapter-57-bahasa-indonesia/
