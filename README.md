@@ -24,7 +24,7 @@ API Manga bahasa Indonesia
    npm run start
    ```
 
-4. visit http://localhost:3000/api
+4. visit http://localhost:500/api
 
 ## Todos
 
