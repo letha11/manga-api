@@ -101,7 +101,6 @@ router.get("/genres", (req, res) => {
       obj.type = type;
       obj.order = orders;
       obj.genre = genres;
-      // obj.order_by = orders;
       res.send(obj);
     })
     .catch((err) => console.log(err));
