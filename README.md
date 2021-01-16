@@ -6,7 +6,11 @@ API Manga bahasa Indonesia
 
 1. Clone this repository
    ```bash
+<<<<<<< HEAD
    git clone https://github.com/letha11/manga-api.git
+=======
+   git clone https://github.com/febryardiansyah/manga-api.git
+>>>>>>> 24fe17c4960483719e9c600d353c2db68a84ee2d
    ```
 2. Install dependecies
 
@@ -24,6 +28,7 @@ API Manga bahasa Indonesia
    npm run start
    ```
 
+<<<<<<< HEAD
 4. visit http://localhost:5000/api
 
 # Documentation
@@ -73,3 +78,10 @@ ch/[endpoint]
 ```
 
 example : https://mangaoi.herokuapp.com/api/ch/god-of-blackfield-chapter-57-bahasa-indonesia/
+=======
+4. visit http://localhost:500/api
+
+## Todos
+
+- ⬜️ add documentation
+>>>>>>> 24fe17c4960483719e9c600d353c2db68a84ee2d
