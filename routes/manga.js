@@ -25,7 +25,7 @@ router.get("/manga/filter/:pageNumber", (req, res) => {
 
       obj.filter_result = filterResult;
 
-      res.send(obj.filter_result[0].listManga);
+      res.send(obj.filter_result[1]);
     })
     .catch((err) => console.log(err));
 });
@@ -47,7 +47,7 @@ router.get("/manga/search/:pageNumber", (req, res) => {
       let searchResult = scrapeListManga(response);
       obj.search_result = searchResult;
 
-      res.send(obj.search_result[0].searchResult);
+      res.send(obj.search_result[0]);
     })
     .catch((err) => console.log(err));
 });
@@ -114,7 +114,6 @@ router.get("/manga/detail/:endpoint", (req, res) => {
     .then((response) => {
       const $ = cheerio.load(response.data);
       const element = $("div.main-info");
-      const tableElement = $("div.info-left > div > div.tsinfo > div.imptdt");
       let obj = {};
       let genres = [];
       let chapter_list = [];
@@ -158,7 +157,6 @@ router.get("/manga/detail/:endpoint", (req, res) => {
       let posted_by = scrapeTable("Posted By");
       let posted_on = scrapeTable("Posted On");
       let updated_on = scrapeTable("Updated On");
-      // console.log(status);
 
       obj.table_info = {
         status,
@@ -248,6 +246,8 @@ function scrapeListManga(response) {
   const searchElement = $("#content > div.wrapper > div.postbody > div.bixbox");
   let listManga = [];
   let searchResult = [];
+  let searchResultObj = {};
+  let listMangaObj = {};
 
   // Getting for search page / search result
   element.find("div.listupd > div.bs").each((i, el) => {
@@ -274,6 +274,7 @@ function scrapeListManga(response) {
       endpoint,
     });
   });
+  searchResultObj.manga_list = searchResult;
 
   // Getting for mangaList
   element.find("div.mrgn > div.listupd > div.bs").each((i, el) => {
@@ -300,8 +301,9 @@ function scrapeListManga(response) {
       endpoint,
     });
   });
+  listMangaObj.manga_list = listManga;
 
-  return [{ searchResult, listManga }];
+  return [searchResultObj, listMangaObj];
 }
 
 module.exports = router;
