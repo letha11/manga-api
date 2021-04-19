@@ -3,9 +3,12 @@ const cheerio = require("cheerio");
 const baseURL = require("../constants/constant");
 const express = require("express");
 const router = express.Router();
+const helper = require('../helper/helper');
+
+axios.defaults.baseURL = baseURL;
 
 // filtering
-router.get("/manga/filter/:pageNumber", (req, res) => {
+router.get("/manga/:pageNumber", (req, res) => {
   let genre = req.query.genre == undefined ? "" : req.query.genre;
   let status = req.query.status == undefined ? "" : req.query.status;
   let type = req.query.type == undefined ? "" : req.query.type;
@@ -14,40 +17,40 @@ router.get("/manga/filter/:pageNumber", (req, res) => {
 
   let url =
     pageNumber === 1
-      ? `${baseURL}/manga/?genre%5B%5D=${genre}&status=${status}&type=${type}&order=${order}`
-      : `${baseURL}/manga/?page=${pageNumber}&genre%5B%5D=${genre}&status=${status}&type=${type}&order=${order}`;
+      ? `/manga/?genre%5B%5D=${genre}&status=${status}&type=${type}&order=${order}`
+      : `/manga/?page=${pageNumber}&genre%5B%5D=${genre}&status=${status}&type=${type}&order=${order}`;
 
   axios
-    .get(url)
+    .get(encodeURI(url))
     .then((response) => {
       let obj = {};
-      let filterResult = scrapeListManga(response);
+      let filterResult = helper.scrapeListManga(response);
 
-      obj.filter_result = filterResult;
+      obj.filter_result = filterResult[1];
 
-      res.send(obj.filter_result[1]);
+      res.send(obj);
     })
     .catch((err) => console.log(err));
 });
 
 // search manga
-router.get("/manga/search/:pageNumber", (req, res) => {
+router.get("/manga/s/:pageNumber", (req, res) => {
   let search = req.query.search;
   let pageNumber = req.params.pageNumber;
   let url =
     pageNumber == 1
-      ? `${baseURL}/?s=${search}`
-      : `${baseURL}/page/${pageNumber}/?s=${search}`;
+      ? `/?s=${search}`
+      : `/page/${pageNumber}/?s=${search}`;
 
   axios
-    .get(url)
+    .get(encodeURI(url))
     .then((response) => {
       let obj = {};
 
-      let searchResult = scrapeListManga(response);
-      obj.search_result = searchResult;
+      let searchResult = helper.scrapeListManga(response);
+      obj.search_result = searchResult[0];
 
-      res.send(obj.search_result[0]);
+      res.send(obj);
     })
     .catch((err) => console.log(err));
 });
@@ -55,7 +58,7 @@ router.get("/manga/search/:pageNumber", (req, res) => {
 // getting genre, status, type, orders
 router.get("/genres", (req, res) => {
   axios
-    .get(`${baseURL}/manga/`)
+    .get(encodeURI(`/manga/`))
     .then((response) => {
       const $ = cheerio.load(response.data);
       const element = $("#content > div.wrapper > div.postbody > div.bixbox");
@@ -110,7 +113,7 @@ router.get("/genres", (req, res) => {
 router.get("/manga/detail/:endpoint", (req, res) => {
   let endpoint = req.params.endpoint;
   axios
-    .get(`${baseURL}/manga/${endpoint}`)
+    .get(encodeURI(`/manga/${endpoint}`))
     .then((response) => {
       const $ = cheerio.load(response.data);
       const element = $("div.main-info");
@@ -210,7 +213,7 @@ router.get("/ch/:endpoint", async (req, res) => {
   let endpoint = req.params.endpoint;
 
   axios
-    .get(`${baseURL}/${endpoint}`)
+    .get(encodeURI(`/${endpoint}`))
     .then((response) => {
       const $ = cheerio.load(response.data, { xmlMode: true });
       const a = cheerio.load(response.data);
@@ -240,70 +243,6 @@ router.get("/ch/:endpoint", async (req, res) => {
     .catch((err) => console.log(err));
 });
 
-function scrapeListManga(response) {
-  const $ = cheerio.load(response.data);
-  const element = $("#content > div.wrapper > div.postbody > div.bixbox");
-  const searchElement = $("#content > div.wrapper > div.postbody > div.bixbox");
-  let listManga = [];
-  let searchResult = [];
-  let searchResultObj = {};
-  let listMangaObj = {};
 
-  // Getting for search page / search result
-  element.find("div.listupd > div.bs").each((i, el) => {
-    let title, thumb, last_chapter, rating_score, endpoint;
-    title = $(el).find("div.bsx > a > div.bigor > div.tt").text().trim();
-    thumb = $(el).find("div.bsx > a > div.limit > img").attr("src");
-    last_chapter = $(el)
-      .find("div.bsx > a > div.bigor > div.adds > div.epxs")
-      .text();
-    rating_score = $(el)
-      .find("div.bsx > a > div.bigor > div.adds div.numscore")
-      .text();
-    endpoint = title
-      .replace(/[^\w\s-]|(.)(?=\1)/g, "")
-      .replace(/\s/g, "-")
-      .replace(/[^\w\s-]|(.)(?=\1)/g, "")
-      .toLowerCase();
-
-    searchResult.push({
-      title,
-      thumb,
-      last_chapter,
-      rating_score,
-      endpoint,
-    });
-  });
-  searchResultObj.manga_list = searchResult;
-
-  // Getting for mangaList
-  element.find("div.mrgn > div.listupd > div.bs").each((i, el) => {
-    let title, thumb, last_chapter, rating_score, endpoint;
-    title = $(el).find("div.bsx > a > div.bigor > div.tt").text().trim();
-    thumb = $(el).find("div.bsx > a > div.limit > img").attr("src");
-    last_chapter = $(el)
-      .find("div.bsx > a > div.bigor > div.adds > div.epxs")
-      .text();
-    rating_score = $(el)
-      .find("div.bsx > a > div.bigor > div.adds div.numscore")
-      .text();
-    endpoint = title
-      .replace(/[^\w\s-]|(.)(?=\1)/g, "")
-      .replace(/\s/g, "-")
-      .replace(/[^\w\s-]|(.)(?=\1)/g, "")
-      .toLowerCase();
-
-    listManga.push({
-      title,
-      thumb,
-      last_chapter,
-      rating_score,
-      endpoint,
-    });
-  });
-  listMangaObj.manga_list = listManga;
-
-  return [searchResultObj, listMangaObj];
-}
 
 module.exports = router;
