@@ -217,7 +217,7 @@ router.get("/ch/:endpoint", async (req, res) => {
     .then((response) => {
       const $ = cheerio.load(response.data, { xmlMode: true });
       const chapterElement = $("#readerarea > noscript").html();
-      const element = $("div.entry-content");
+      const element = $(".postarea");
       let chapter = [];
       let obj = {};
 
@@ -233,7 +233,8 @@ router.get("/ch/:endpoint", async (req, res) => {
           });
         });
       obj.endpoint = endpoint;
-      obj.current_chapter = endpoint.replace(/[^0-9\.]/g, "");
+      obj.current_chaoter = element.find('.headpost > h1.entry-title').text().replace(/[^0-9\.]/g, "")
+      // obj.current_chapter = endpoint.replace(/[^0-9]/g, "");
       obj.total_pages = chapter.length;
       obj.chapter_list = chapter;
 
