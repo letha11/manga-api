@@ -233,7 +233,7 @@ router.get("/ch/:endpoint", async (req, res) => {
           });
         });
       obj.endpoint = endpoint;
-      obj.current_chapter = endpoint.replace(/[^0-9]/g, "");
+      obj.current_chapter = endpoint.replace(/[^0-9\.]/g, "");
       obj.total_pages = chapter.length;
       obj.chapter_list = chapter;
 
