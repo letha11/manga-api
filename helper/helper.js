@@ -14,13 +14,13 @@ class Helper {
 
     // Getting for search page / search result
     element.find("div.listupd div.bs").each((i, el) => {
-      let title, thumb, last_chapter, rating_score, endpoint;
+      let title, thumb, latest_chapter, rating, endpoint;
       title = $(el).find("div.bsx > a > div.bigor > div.tt").text().trim();
       thumb = $(el).find("div.bsx > a > div.limit > img").attr("src");
-      last_chapter = $(el)
+      latest_chapter = $(el)
         .find("div.bsx > a > div.bigor > div.adds > div.epxs")
         .text();
-      rating_score = $(el)
+      rating = $(el)
         .find("div.bsx > a > div.bigor > div.adds div.numscore")
         .text();
       endpoint = title
@@ -32,8 +32,8 @@ class Helper {
       searchResult.push({
         title,
         thumb,
-        last_chapter,
-        rating_score,
+        latest_chapter,
+        rating,
         endpoint,
       });
     });
@@ -41,13 +41,13 @@ class Helper {
 
     // Getting for mangaList
     element.find("div.mrgn > div.listupd > div.bs").each((i, el) => {
-      let title, thumb, last_chapter, rating_score, endpoint;
+      let title, thumb, latest_chapter, rating, endpoint;
       title = $(el).find("div.bsx > a > div.bigor > div.tt").text().trim();
       thumb = $(el).find("div.bsx > a > div.limit > img").attr("src");
-      last_chapter = $(el)
+      latest_chapter = $(el)
         .find("div.bsx > a > div.bigor > div.adds > div.epxs")
         .text();
-      rating_score = $(el)
+      rating = $(el)
         .find("div.bsx > a > div.bigor > div.adds div.numscore")
         .text();
       endpoint = title
@@ -59,8 +59,8 @@ class Helper {
       listManga.push({
         title,
         thumb,
-        last_chapter,
-        rating_score,
+        latest_chapter,
+        rating,
         endpoint,
       });
     });

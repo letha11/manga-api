@@ -26,7 +26,7 @@ router.get("/manga/:pageNumber", (req, res) => {
       let obj = {};
       let filterResult = helper.scrapeListManga(response);
 
-      obj.filter_result = filterResult[1];
+      obj = filterResult[1];
 
       res.send(obj);
     })
@@ -48,7 +48,7 @@ router.get("/manga/s/:pageNumber", (req, res) => {
       let obj = {};
 
       let searchResult = helper.scrapeListManga(response);
-      obj.search_result = searchResult[0];
+      obj = searchResult[0];
 
       res.send(obj);
     })
@@ -70,12 +70,12 @@ router.get("/genres", (req, res) => {
 
       function scrapeFilterValue(arr, selector) {
         element.find(selector).each((i, el) => {
-          let value, label;
+          let value, title;
           value = $(el).find("input").attr("value");
-          label = $(el).find("label").text();
+          title = $(el).find("label").text();
           arr.push({
+            title,
             value,
-            label,
           });
         });
       }
@@ -216,7 +216,6 @@ router.get("/ch/:endpoint", async (req, res) => {
     .get(encodeURI(`/${endpoint}`))
     .then((response) => {
       const $ = cheerio.load(response.data, { xmlMode: true });
-      const a = cheerio.load(response.data);
       const chapterElement = $("#readerarea > noscript").html();
       const element = $("div.entry-content");
       let chapter = [];
@@ -225,18 +224,18 @@ router.get("/ch/:endpoint", async (req, res) => {
       $("p img")
         .html(chapterElement)
         .each((i, el) => {
-          let chapter_link, index;
-          chapter_link = $(el).attr("src");
+          let image, index;
+          image = $(el).attr("src").replace(/ /g, "%20");
           index = i;
           chapter.push({
-            chapter_link,
+            image,
             index,
           });
         });
       obj.endpoint = endpoint;
       obj.current_chapter = endpoint.replace(/[^0-9]/g, "");
-      obj.chapter_pages = chapter.length;
-      obj.chapter = chapter;
+      obj.total_pages = chapter.length;
+      obj.chapter_list = chapter;
 
       res.send(obj);
     })
