@@ -1,3 +1,3 @@
-const baseURL = "https://kiryuu.co";
+const baseURL = "https://kiryuu.id";
 
 module.exports = baseURL;

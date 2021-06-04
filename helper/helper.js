@@ -1,4 +1,5 @@
 const cheerio = require("cheerio");
+const baseURL = require("../constants/constant");
 
 class Helper {
   
@@ -26,7 +27,7 @@ class Helper {
       endpoint = $(el)
         .find("div.bsx > a")
         .attr('href')
-        .replace('https://kiryuu.co/manga/', '')
+        .replace(`${baseURL}/manga/`, '')
         .replace(/\//g, '')
 
       listManga.push({
