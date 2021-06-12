@@ -116,17 +116,17 @@ router.get("/manga/detail/:endpoint", (req, res) => {
     .get(encodeURI(`/manga/${endpoint}`))
     .then((response) => {
       const $ = cheerio.load(response.data);
-      const element = $("div.main-info");
+      const element = $("#content");
       let obj = {};
       let genres = [];
       let chapter_list = [];
 
       // Getting the title of the manga
-      obj.title = $("#titlemove > h1").text();
+      obj.title = $("div.seriestuheader > h1").text();
 
       // getting rating value
       obj.rating = element
-        .find("div.info-left > div > div.rating.bixbox > div > div.num")
+        .find("div.rating.bixbox > div > div.num")
         .text();
 
       // getting a big background
@@ -137,18 +137,19 @@ router.get("/manga/detail/:endpoint", (req, res) => {
 
       // Getting the thumbnail
       obj.thumb = element
-        .find("div.info-left > div > div.thumb > img")
+        .find("div.seriestucontl > div.thumb > img")
         .attr("src");
 
       // getting synopsis of the manga
       obj.synopsis = element
         .find(
-          "div.info-right > div.info-desc.bixbox > div:nth-child(3) > div > p"
+          // "div.info-right > div.info-desc.bixbox > div:nth-child(3) > div > p"
+          "div.seriestuhead > div.entry-content.entry-content-single > p"
         )
         .text();
 
       const scrapeTable = (contains) => {
-        return $(`div.imptdt:contains("${contains}")`).find("i, a").text();
+        return $(`table.infotable tr > td:contains("${contains}")`).parent().find('td').last().text();
       };
 
       let status = scrapeTable("Status");
@@ -175,7 +176,7 @@ router.get("/manga/detail/:endpoint", (req, res) => {
 
       // getting genres of the manga
       element
-        .find("div.info-right > div.info-desc > div:nth-child(2) > span > a")
+        .find("div.seriestugenre > a")
         .each((i, el) => {
           let genre = $(el).text();
           genres.push(genre);
@@ -194,7 +195,7 @@ router.get("/manga/detail/:endpoint", (req, res) => {
         endpoint = $(el)
           .find("div.chbox > div.eph-num > a")
           .attr("href")
-          .replace(/https:\/\/kiryuu.co\//, "");
+          .replace(/https:\/\/kiryuu.id\//, "");
         chapter_list.push({
           chapter,
           date,
