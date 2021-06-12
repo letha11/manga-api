@@ -216,14 +216,13 @@ router.get("/ch/:endpoint", async (req, res) => {
   axios
     .get(encodeURI(`/${endpoint}`))
     .then((response) => {
-      const $ = cheerio.load(response.data, { xmlMode: true });
+      const $ = cheerio.load(response.data);
       const chapterElement = $("#readerarea > noscript").html();
       const element = $(".postarea");
       let chapter = [];
       let obj = {};
 
       $("p img")
-        .html(chapterElement)
         .each((i, el) => {
           let image, index;
           image = $(el).attr("src").replace(/ /g, "%20");
