@@ -1,3 +1,5 @@
+# [DEPRECATED]
+
 # Manga API
 
 API Manga bahasa Indonesia
